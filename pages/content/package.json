@@ -1,0 +1,20 @@
+{
+  "name": "pages-content",
+  "version": "0.2.0",
+  "type": "module",
+  "scripts": {
+    "ready": "node -e \"console.log('Content ready')\"",
+    "build": "vite build",
+    "dev": "cross-env __DEV__=true vite build --mode development --watch",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@extension/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.330",
+    "cross-env": "^7.0.3",
+    "typescript": "5.5.4",
+    "vite": "^6.4.1"
+  }
+}

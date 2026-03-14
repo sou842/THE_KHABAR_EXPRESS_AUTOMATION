@@ -1,0 +1,27 @@
+{
+  "name": "chrome-extension",
+  "version": "0.2.0",
+  "description": "PromptBridge Chrome Extension",
+  "type": "module",
+  "scripts": {
+    "clean:node_modules": "pnpx rimraf node_modules",
+    "clean:turbo": "rimraf .turbo",
+    "clean": "pnpm clean:turbo && pnpm clean:node_modules",
+    "ready": "node -e \"console.log('Extension ready')\"",
+    "build": "vite build",
+    "dev": "cross-env __DEV__=true vite build --mode development --watch",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@extension/shared": "workspace:*",
+    "@extension/storage": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.330",
+    "@types/node": "^22.5.5",
+    "cross-env": "^7.0.3",
+    "deepmerge": "^4.3.1",
+    "typescript": "5.5.4",
+    "vite": "^6.4.1"
+  }
+}

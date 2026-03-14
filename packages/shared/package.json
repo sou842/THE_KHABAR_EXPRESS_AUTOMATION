@@ -1,0 +1,12 @@
+{
+  "name": "@extension/shared",
+  "version": "0.2.0",
+  "type": "module",
+  "main": "./lib/index.ts",
+  "scripts": {
+    "type-check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "5.5.4"
+  }
+}
