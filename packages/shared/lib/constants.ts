@@ -1,12 +1,12 @@
 // API configuration - Sensitive keys should be moved to environment variables
 export const API_CONFIG = {
   GEMINI: {
-    key: '', // Replace with your Gemini API key
+    key: '', // Replace with your Gemini API key or use process.env
     url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent',
     model: 'gemini-2.5-flash-lite'
   },
   OPENAI: {
-    key: '', // Replace with your OpenAI API key
+    key: '', // Replace with your OpenAI API key or use process.env
     url: 'https://api.openai.com/v1/chat/completions',
     model: 'gpt-4o-mini'
   }

@@ -250,7 +250,7 @@ BANNED PATTERNS:
    FIX: End with a specific fact, stat, date, or concrete next development.
 
 10. Em dash overuse
-    Do NOT use em dashes (—) more than once per paragraph.
+    Do NOT use em dashes (—) in paragraph.
     FIX: Use a comma, period, or rewrite the sentence.
 
 11. Boldface overuse
