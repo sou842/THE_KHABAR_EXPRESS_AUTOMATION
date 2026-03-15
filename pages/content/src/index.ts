@@ -81,6 +81,111 @@ function injectStyles() {
       from { transform: translateX(100%); opacity: 0; }
       to { transform: translateX(0); opacity: 1; }
     }
+    
+    /* Comet Effect HUD Styles */
+    @keyframes comet-rotation {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .pb-hud-container {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999999;
+      pointer-events: auto;
+      animation: pb-hud-fade-in 0.3s ease-out forwards;
+      border-radius: 9999px;
+      overflow: hidden;
+      padding: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pb-hud-border {
+      position: absolute;
+      inset: -150%;
+      background: conic-gradient(
+        from 0deg,
+        transparent 0%,
+        transparent 70%,
+        rgba(255, 255, 255, 0.9) 90%,
+        white 100%
+      );
+      animation: comet-rotation 2s linear infinite;
+      z-index: 0;
+    }
+
+    .pb-hud-content {
+      position: relative;
+      background: #09090b;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 9999px;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid #18181b;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      font-family: Inter, system-ui, sans-serif;
+      min-width: 180px;
+    }
+
+    .pb-hud-indicator {
+      width: 8px;
+      height: 8px;
+      background: white;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .pb-hud-indicator::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: white;
+      border-radius: 50%;
+      animation: pb-hud-ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+
+    .pb-hud-label {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .pb-hud-stop-btn {
+      background: #18181b;
+      border: 1px solid #27272a;
+      color: #a1a1aa;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: all 0.2s;
+    }
+
+    .pb-hud-stop-btn:hover {
+      background: #27272a;
+      color: white;
+      border-color: #3f3f46;
+    }
+
+    @keyframes pb-hud-ping {
+      75%, 100% { transform: scale(2.5); opacity: 0; }
+    }
+
+    @keyframes pb-hud-fade-in {
+      from { transform: translate(-50%, 20px); opacity: 0; }
+      to { transform: translate(-50%, 0); opacity: 1; }
+    }
   `;
   document.head.appendChild(style);
 }
@@ -108,6 +213,58 @@ function showCustomAlert(title: string, message: string) {
   document.body.appendChild(overlay);
 }
 
+// HUD functions
+let hudElement: HTMLElement | null = null;
+
+function updateHud(status: string, message?: string) {
+  if (!hudElement) {
+    hudElement = document.createElement('div');
+    hudElement.id = 'pb-on-page-hud';
+    hudElement.className = 'pb-hud-container';
+    
+    hudElement.innerHTML = `
+      <div class="pb-hud-border"></div>
+      <div class="pb-hud-content">
+        <div class="pb-hud-indicator"></div>
+        <div class="pb-hud-label" id="pb-hud-label">Working...</div>
+        <button class="pb-hud-stop-btn" id="pb-hud-stop">Stop</button>
+      </div>
+    `;
+    
+    document.body.appendChild(hudElement);
+    
+    hudElement.querySelector('#pb-hud-stop')?.addEventListener('click', () => {
+      chrome.runtime.sendMessage({ type: 'cancel_task' });
+      removeHud();
+    });
+  }
+
+  const label = hudElement.querySelector('#pb-hud-label');
+  if (label) {
+    const isLoading = ['analyzing', 'thinking', 'executing'].includes(status);
+    label.textContent = isLoading ? 'Working...' : (status.charAt(0).toUpperCase() + status.slice(1));
+  }
+
+  // Remove HUD automatically after completion or error with delay
+  if (['completed', 'error'].includes(status)) {
+    setTimeout(() => {
+      removeHud();
+    }, 3000);
+  }
+}
+
+function removeHud() {
+  if (hudElement) {
+    hudElement.style.opacity = '0';
+    hudElement.style.transform = 'translate(-50%, 20px)';
+    hudElement.style.transition = 'all 0.3s ease-in';
+    setTimeout(() => {
+      hudElement?.remove();
+      hudElement = null;
+    }, 300);
+  }
+}
+
 // Message handler
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   handleMessage(message, sender, sendResponse);
@@ -126,6 +283,11 @@ async function handleMessage(message: any, sender: any, sendResponse: any) {
 
       case 'EXECUTE_ACTION_PLAN':
         executeActionPlan(message.payload.actions, message.payload.reasoning);
+        sendResponse({ success: true });
+        break;
+
+      case 'HUD_STATUS_UPDATE':
+        updateHud(message.payload.status, message.payload.message);
         sendResponse({ success: true });
         break;
 

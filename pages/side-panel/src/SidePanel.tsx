@@ -1231,13 +1231,20 @@ ABSOLUTELY NO text outside the JSON array.`;
 
             {/* Status indicator */}
             {status && (
-              <div className="bg-zinc-950 border border-zinc-900 rounded-xl px-4 py-3 inline-block animate-in slide-in-from-bottom-2">
-                <div className="flex items-center gap-3">
-                  <div className="relative">
-                    <div className="w-2 h-2 bg-white rounded-full animate-ping absolute" />
-                    <div className="w-2 h-2 bg-white rounded-full" />
+              <div className="comet-container">
+                <div className="comet-border" />
+                <div className="comet-content bg-zinc-950 border border-zinc-900 rounded-xl px-4 py-3">
+                  <div className="flex items-center gap-3">
+                    <div className="relative">
+                      <div className="w-2 h-2 bg-white rounded-full animate-ping absolute" />
+                      <div className="w-2 h-2 bg-white rounded-full" />
+                    </div>
+                    <span className="text-[10px] font-black tracking-[0.2em] text-white uppercase">
+                      {status.status === 'analyzing' || status.status === 'thinking' || status.status === 'executing' 
+                        ? 'Working...' 
+                        : status.message || status.status}
+                    </span>
                   </div>
-                  <span className="text-[10px] font-black tracking-[0.2em] text-white uppercase">{status.message || status.status}</span>
                 </div>
               </div>
             )}

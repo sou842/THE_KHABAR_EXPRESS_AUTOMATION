@@ -103,22 +103,27 @@ export default function App() {
     const config = getStatusConfig(status.status)
 
     return (
-      <div className={`p-3.5 ${config?.bg} border ${config?.border} rounded-lg transition-all duration-300`}>
-        <div className="w-full flex flex-col items-start gap-3">
-          <div className="flex items-center gap-3">
-            <div className={`flex-shrink-0 w-9 h-9 ${config?.iconBg} rounded-lg flex items-center justify-center ${config?.color}`}>
-              {config?.icon}
+      <div className="comet-container">
+        <div className="comet-border" />
+        <div className="comet-content p-3.5 bg-zinc-950 border border-zinc-900 rounded-lg">
+          <div className="w-full flex flex-col items-start gap-3">
+            <div className="flex items-center gap-3">
+              <div className={`flex-shrink-0 w-9 h-9 ${config?.iconBg} rounded-lg flex items-center justify-center ${config?.color}`}>
+                {config?.icon}
+              </div>
+              <h4 className={`text-sm font-semibold ${config?.color}`}>
+                {status.status === 'analyzing' || status.status === 'thinking' || status.status === 'executing' 
+                  ? 'Working...' 
+                  : status?.title || config?.title}
+              </h4>
             </div>
-            <h4 className={`text-sm font-semibold ${config?.color}`}>
-              {status?.title || config?.title}
-            </h4>
+            {status?.message && (
+              <p
+                dangerouslySetInnerHTML={{ __html: status?.message }}
+                className="w-full text-start text-xs text-zinc-300 leading-relaxed whitespace-pre-wrap"
+              />
+            )}
           </div>
-          {status?.message && (
-            <p
-              dangerouslySetInnerHTML={{ __html: status?.message }}
-              className="w-full text-start text-xs text-zinc-300 leading-relaxed whitespace-pre-wrap"
-            />
-          )}
         </div>
       </div>
     )

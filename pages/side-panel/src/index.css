@@ -48,3 +48,36 @@ body {
   background: linear-gradient(to bottom, transparent 0%, rgba(57, 255, 20, 0.05) 50%, transparent 100%);
   background-size: 100% 4px;
 }
+
+@keyframes comet-rotation {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.comet-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  padding: 1px;
+}
+
+.comet-border {
+  position: absolute;
+  inset: -100%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%,
+    transparent 70%,
+    rgba(255, 255, 255, 0.8) 90%,
+    white 100%
+  );
+  animation: comet-rotation 2s linear infinite;
+  z-index: 0;
+}
+
+.comet-content {
+  position: relative;
+  background: rgb(9 9 11); /* matches zinc-950 */
+  border-radius: calc(0.75rem - 1px);
+  z-index: 1;
+}

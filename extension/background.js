@@ -165,7 +165,7 @@ async function handleExecuteCommand(payload, tab) {
     broadcastStatus({
       status: 'analyzing',
       message: 'Analyzing page and understanding command...'
-    })
+    }, tab.id)
 
     // Get page context
     const context = await getPageContext(tab.id)
@@ -174,7 +174,7 @@ async function handleExecuteCommand(payload, tab) {
     broadcastStatus({
       status: 'thinking',
       message: 'AI is planning the actions...'
-    })
+    }, tab.id)
 
     const actionPlan = await aiEngine.processCommand(payload.command, context)
 
@@ -192,7 +192,7 @@ async function handleExecuteCommand(payload, tab) {
       status: 'executing',
       message: actionPlan.understanding,
       totalSteps: actionPlan.actions.length
-    })
+    }, tab.id)
 
     // Execute actions on content script
     if (actionPlan.actions.length > 0) {
@@ -205,9 +205,9 @@ async function handleExecuteCommand(payload, tab) {
       })
     } else {
       broadcastStatus({
-        status: 'completed',
-        message: actionPlan.reasoning || 'No actions needed'
-      })
+      status: 'completed',
+      message: actionPlan.reasoning || 'No actions needed'
+    }, tab.id)
     }
 
     // Mark success in history
@@ -276,7 +276,7 @@ async function handleExecuteManualResponse(payload, tab) {
       status: 'executing',
       message: actionPlan.understanding || 'Executing manual actions...',
       totalSteps: actionPlan.actions.length
-    })
+    }, tab.id)
 
     // Execute actions
     if (actionPlan.actions.length > 0) {
@@ -289,9 +289,9 @@ async function handleExecuteManualResponse(payload, tab) {
       })
     } else {
       broadcastStatus({
-        status: 'completed',
-        message: 'No actions found in manual response'
-      })
+      status: 'completed',
+      message: 'No actions found in manual response'
+    }, tab.id)
     }
 
     state.executionHistory[state.executionHistory.length - 1].success = true
@@ -349,13 +349,20 @@ async function getPageContext(tabId) {
 /**
  * Broadcast status to all connected UIs
  */
-function broadcastStatus(status) {
+function broadcastStatus(status, tabId) {
+  // Broadcast to connection-based UIs
   chrome.runtime.sendMessage({
     type: 'STATUS_UPDATE',
     payload: status
-  }).catch(() => {
-    // No listeners, that's fine
-  })
+  }).catch(() => {});
+
+  // Broadcast to content script HUD if tabId is available
+  if (tabId) {
+    chrome.tabs.sendMessage(tabId, {
+      type: 'HUD_STATUS_UPDATE',
+      payload: status
+    }).catch(() => {});
+  }
 }
 
 /**
