@@ -437,7 +437,7 @@ FINAL INTERNAL CHECK (DO NOT OUTPUT):
 * Each FAQ answer is clear and not copied from the article
 * No em dash overuse, no boldface mid-sentence, no emojis, no title case headings
 * Ready for production`);
-  const [batchInterval, setBatchInterval] = useState(30);
+  const [batchInterval, setBatchInterval] = useState(2.4);
   const [isBatchRunning, setIsBatchRunning] = useState(false);
   const [batchProgress, setBatchProgress] = useState({ current: 0, total: 0 });
   const [batchError, setBatchError] = useState('');
