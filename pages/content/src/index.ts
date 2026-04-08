@@ -35,9 +35,9 @@ function injectStyles() {
       bottom: 24px;
       right: 24px;
       z-index: 999999;
-      background: #111827;
+      background: rgba(0, 0, 0);
       border: 1px solid #1f2937;
-      border-left: 4px solid #6366f1;
+      border-top: 4px solid #5f5f5f;
       box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3), 0 4px 6px -2px rgba(0,0,0,0.2);
       border-radius: 8px;
       padding: 16px;
@@ -65,7 +65,7 @@ function injectStyles() {
       white-space: pre-wrap;
     }
     .minibot-alert-btn {
-      background: #4f46e5;
+      background: #282828;
       color: white;
       border: none;
       padding: 6px 12px;
@@ -76,7 +76,7 @@ function injectStyles() {
       align-self: flex-end;
       transition: background 0.2s;
     }
-    .minibot-alert-btn:hover { background: #4338ca; }
+    .minibot-alert-btn:hover { background: #6b6b6b; }
     @keyframes minibot-slide-in {
       from { transform: translateX(100%); opacity: 0; }
       to { transform: translateX(0); opacity: 1; }

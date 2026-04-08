@@ -437,7 +437,7 @@ FINAL INTERNAL CHECK (DO NOT OUTPUT):
 * Each FAQ answer is clear and not copied from the article
 * No em dash overuse, no boldface mid-sentence, no emojis, no title case headings
 * Ready for production`);
-  const [batchInterval, setBatchInterval] = useState(30);
+  const [batchInterval, setBatchInterval] = useState(2.4);
   const [isBatchRunning, setIsBatchRunning] = useState(false);
   const [batchProgress, setBatchProgress] = useState({ current: 0, total: 0 });
   const [batchError, setBatchError] = useState('');
@@ -479,65 +479,134 @@ FINAL INTERNAL CHECK (DO NOT OUTPUT):
   // (exactly as batch does), then await the task_complete response.
   // The port onMessage listener checks jsonGenCallbackRef first and routes
   // accordingly — no direct fetch() to any API.
-  const NEWS_FETCH_PROMPT = `You are a news aggregation AI with memory awareness.
+  const NEWS_FETCH_PROMPT = `You are a news aggregation AI operating in HARD SEARCH MODE.
 
 TASK:
-Fetch TODAY'S top news related to the topic: "{TOPIC}"
+Fetch TODAY’S latest news related ONLY to the Indian Premier League (IPL).
 
-CRITICAL UNIQUENESS RULES (MANDATORY):
-1. NEVER repeat a news item that has appeared in previous responses.
-2. Treat news as duplicate if ANY of the following match:
-   - same headline
-   - same core event or announcement
-   - same company/person + same action
-3. If a topic is already covered earlier today, SKIP it and choose a different event.
-4. All news items MUST represent distinct events.
-5. If fewer than 2 unique news items exist, return ONLY what is available — do NOT repeat.
+CATEGORY:
 
-TIME RULES:
-6. News must be from TODAY only.
-7. If TODAY has limited news, prioritize:
-   breaking news > official announcements > verified reports.
+* sports
 
-FORMAT RULES (STRICT):
-8. Response MUST be valid JSON.
-9. Return ONLY the JSON array (no markdown, no explanation).
-10. Structure, field names, and order MUST remain EXACTLY the same.
-11. Minimum 2 items, maximum 4 items (unless uniqueness rule prevents this).
+CONTENT REQUIREMENTS (STRICT):
 
-FIXED RESPONSE STRUCTURE (DO NOT CHANGE):
+1. Return EXACTLY 5 news items.
+2. ALL news MUST be from TODAY only.
+3. ALL news items MUST be real, verifiable IPL-related events.
+
+HARD SEARCH RULES (CRITICAL):
+
+4. Actively search across:
+
+* sports news platforms
+* official IPL updates
+* team announcements
+* press releases
+* verified match reports
+
+5. Use both major and minor sources if needed.
+6. Prefer factual updates over opinion pieces.
+
+SEO NEWS SELECTION RULES (VERY IMPORTANT):
+
+7. Prioritize IPL topics with high search demand such as:
+
+* match results and scorecards
+* player performances (centuries, wickets, records)
+* team announcements and injuries
+* toss results and playing XI
+* controversies or rule changes
+* points table updates
+
+8. Prefer stories that include recognizable entities such as:
+
+* IPL teams (e.g., Chennai Super Kings, Mumbai Indians)
+* players (e.g., Virat Kohli, MS Dhoni)
+* venues or match locations
+* BCCI or IPL officials
+
+9. Avoid:
+
+* speculation or rumors
+* opinion/editorial content
+* non-IPL cricket news
+
+HEADLINE QUALITY RULES (SEO CRITICAL):
+
+10. Headlines MUST be clear, factual, and SEO-friendly.
+
+11. Headlines MUST include strong keywords such as:
+
+* team names
+* player names
+* “IPL 2026”
+* match result keywords (wins, scores, records)
+
+Examples of GOOD headlines:
+
+* Mumbai Indians Beat Chennai Super Kings in IPL 2026 Thriller
+* Virat Kohli Scores Century in IPL 2026 Match Against KKR
+
+Examples of BAD headlines:
+
+* Big Match Happened in IPL
+* Exciting Game Today
+
+SUMMARY RULES:
+
+12. Summary must be 2–3 concise sentences.
+13. Must clearly explain:
+
+* what happened
+* who was involved
+* key outcome (score/result/decision)
+
+UNIQUENESS RULES (MANDATORY):
+
+14. Do NOT repeat:
+
+* same match
+* same player performance
+* same event in different wording
+
+FORMAT RULES (NON-NEGOTIABLE):
+
+15. Output MUST be valid JSON.
+16. Output MUST be a single flat JSON array.
+17. Return ONLY the JSON array — no explanation.
+
+FIXED OBJECT STRUCTURE (DO NOT MODIFY):
+
 [
-  {
-    "headline": "",
-    "summary": "",
-    "category": "",
-    "tags": [],
-    "source": "",
-    "publishedDate": ""
-  }
+{
+"headline": "",
+"summary": "",
+"category": "sports",
+"tags": [],
+"source": "",
+"publishedDate": ""
+}
 ]
 
-CATEGORY CONSTRAINT:
-Category MUST be one of:
-- "technology"
-- "food"
-- "politics"
-- "business"
-- "science"
-- "health"
-- "entertainment"
-- "sports"
+FIELD RULES:
+
+* "category" MUST be "sports"
+* "publishedDate" MUST be in ISO format: YYYY-MM-DD
 
 TAG RULES:
-- lowercase only
-- 2–5 tags per item
-- no duplicates within a single item
 
-FAILSAFE:
-If any rule is violated, REGENERATE the response until all rules are satisfied.
+* lowercase only
+* 2–5 tags
+* include team names, player names, or keywords like "ipl 2026", "match result"
 
-OUTPUT CONSTRAINT:
-ABSOLUTELY NO text outside the JSON array.`;
+FINAL ENFORCEMENT:
+
+* EXACTLY 5 items
+* ONLY IPL-related news
+* ONLY TODAY’s news
+* NO duplicates
+* NO fabrication
+`;
 
   const generateJsonFromAI = async (): Promise<any[]> => {
     setBatchError('');
@@ -907,7 +976,7 @@ ABSOLUTELY NO text outside the JSON array.`;
           </div>
           <div>
             <h1 className="text-sm font-black text-white tracking-widest uppercase italic leading-none">PromptBridge</h1>
-            <p className="text-[10px] text-zinc-500 mt-1 font-bold uppercase tracking-tighter">Automation Engine</p>
+            <p className="text-[10px] text-zinc-500 mt-1 font-bold uppercase tracking-tighter">Automation Engine ( IPL )</p>
           </div>
         </div>
         <div className="flex items-center gap-1.5 p-1 bg-zinc-950 rounded-xl border border-zinc-800">
@@ -1168,7 +1237,7 @@ ABSOLUTELY NO text outside the JSON array.`;
                   </div>
 
                   <div className="space-y-4 text-center">
-                    <h1 className="text-4xl font-black text-white tracking-tighter uppercase italic opacity-20 select-none">PromptBridge</h1>
+                    <h1 className="text-4xl font-black text-white tracking-tighter uppercase italic opacity-20 select-none">IPL</h1>
                     <div className="flex flex-col gap-2">
                        <p className="text-[10px] text-zinc-600 font-bold uppercase tracking-[0.1em]">Ready for Injection</p>
                        <div className="h-px w-12 bg-zinc-800 mx-auto" />
